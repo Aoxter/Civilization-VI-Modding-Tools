@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.aoxter.civ6moddingtools.ui.controller.WelcomeController">
+   <children>
+      <Label layoutX="203.0" layoutY="84.0" text="Civilization VI" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="30.0" />
+         </font>
+      </Label>
+      <Button fx:id="openProjectButton" layoutX="257.0" layoutY="188.0" mnemonicParsing="false" onAction="#openProject" text="Open project" />
+      <Label layoutX="229.0" layoutY="129.0" text="Modding Tools">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
