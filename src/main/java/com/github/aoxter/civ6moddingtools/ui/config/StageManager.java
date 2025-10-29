@@ -3,6 +3,7 @@ package com.github.aoxter.civ6moddingtools.ui.config;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -12,19 +13,32 @@ public class StageManager {
     private final Stage primaryStage;
     private final FxmlLoader fxmlLoader;
     private final String applicationTitle;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public StageManager(Stage primaryStage, FxmlLoader fxmlLoader, String applicationTitle) {
+    public StageManager(Stage primaryStage, FxmlLoader fxmlLoader, String applicationTitle, ApplicationEventPublisher applicationEventPublisher) {
         this.primaryStage = primaryStage;
         this.fxmlLoader = fxmlLoader;
         this.applicationTitle = applicationTitle;
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    public void openFirstScene(final FxmlView view) {
+        primaryStage.setTitle(applicationTitle);
+        switchScene(view);
     }
 
     public void switchScene(final FxmlView view) {
-        primaryStage.setTitle(applicationTitle);
+        primaryStage.setMinWidth(view.getPrefWidth());
+        primaryStage.setMinHeight(view.getPrefHeight());
         Parent rootNode = loadRootNode(view.getFxmlPath());
-        Scene scene = new Scene(rootNode);
-        primaryStage.setScene(scene);
+        if(primaryStage.getScene() == null) {
+            primaryStage.setScene(new Scene(rootNode));
+        }
+        else {
+            primaryStage.getScene().setRoot(rootNode);
+        }
         primaryStage.show();
+        primaryStage.centerOnScreen();
     }
 
     private Parent loadRootNode(String fxmlPath) {
@@ -37,9 +51,4 @@ public class StageManager {
         return rootNode;
     }
 
-    public void switchToNextScene(final FxmlView view) {
-        Parent rootNode = loadRootNode(view.getFxmlPath());
-        primaryStage.getScene().setRoot(rootNode);
-        primaryStage.show();
-    }
 }
