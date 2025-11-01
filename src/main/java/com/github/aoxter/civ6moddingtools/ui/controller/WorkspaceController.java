@@ -1,5 +1,6 @@
 package com.github.aoxter.civ6moddingtools.ui.controller;
 
+import com.github.aoxter.civ6moddingtools.core.model.ModData;
 import com.github.aoxter.civ6moddingtools.ui.config.StageManager;
 import com.github.aoxter.civ6moddingtools.ui.event.OpenProjectEvent;
 import javafx.beans.property.SimpleStringProperty;
@@ -19,6 +20,7 @@ import java.util.ResourceBundle;
 public class WorkspaceController implements Initializable {
     private File modDirectory;
     private final StageManager stageManager;
+    private ModData modData;
 
     @FXML
     private  Label testLabel;
@@ -33,6 +35,13 @@ public class WorkspaceController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         testLabel.textProperty().bind(modDirectoryPathProperty);
+        try {
+            modData = ModData.getInstance();
+            modData.loadModData(modDirectory);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @EventListener
