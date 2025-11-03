@@ -18,4 +18,9 @@ public class Unit {
     public String getSourceFileName() {
         return sourceFile.getName();
     }
+
+    @Override
+    public String toString() {
+        return unitType + "(" + getSourceFileName() + ")";
+    }
 }

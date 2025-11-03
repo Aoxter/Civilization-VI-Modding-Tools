@@ -35,7 +35,7 @@ public class ModData {
     public void loadModData(File modDirectory) {
         this.modDirectory = modDirectory;
         loadDataFromDirectory(modDirectory);
-        System.out.println(units.stream().map(unit -> unit.getUnitType() + " -> " + unit.getSourceFileName()).collect(Collectors.joining( "\n")));
+        System.out.println(units.stream().map(Unit::toString).collect(Collectors.joining( "\n")));
     }
 
     protected void loadDataFromDirectory(File directory) {
@@ -115,5 +115,9 @@ public class ModData {
             Node node = nodeList.item(i);
 
         }
+    }
+
+    public Set<Unit> getUnits() {
+        return units;
     }
 }
