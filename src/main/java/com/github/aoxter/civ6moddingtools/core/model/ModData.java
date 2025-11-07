@@ -19,6 +19,9 @@ public class ModData {
     private static ModData INSTANCE;
 
     private File modDirectory;
+    private Set<Building> buildings;
+    private Set<Civilization> civilizations;
+    private Set<Leader> leaders;
     private Set<Unit> units;
 
     private ModData() {
@@ -27,6 +30,9 @@ public class ModData {
     public static ModData getInstance() {
         if(INSTANCE == null) {
             INSTANCE = new ModData();
+            INSTANCE.buildings = new HashSet<>();
+            INSTANCE.civilizations = new HashSet<>();
+            INSTANCE.leaders = new HashSet<>();
             INSTANCE.units = new HashSet<>();
         }
         return INSTANCE;
@@ -35,6 +41,21 @@ public class ModData {
     public void loadModData(File modDirectory) {
         this.modDirectory = modDirectory;
         loadDataFromDirectory(modDirectory);
+        System.out.println("--------------------------------------------------");
+        System.out.println("BUILDINGS");
+        System.out.println("--------------------------------------------------");
+        System.out.println(buildings.stream().map(Building::toString).collect(Collectors.joining( "\n")));
+        System.out.println("--------------------------------------------------");
+        System.out.println("CIVILIZATIONS");
+        System.out.println("--------------------------------------------------");
+        System.out.println(civilizations.stream().map(Civilization::toString).collect(Collectors.joining( "\n")));
+        System.out.println("--------------------------------------------------");
+        System.out.println("LEADERS");
+        System.out.println("--------------------------------------------------");
+        System.out.println(leaders.stream().map(Leader::toString).collect(Collectors.joining( "\n")));
+        System.out.println("--------------------------------------------------");
+        System.out.println("UNITS");
+        System.out.println("--------------------------------------------------");
         System.out.println(units.stream().map(Unit::toString).collect(Collectors.joining( "\n")));
     }
 
@@ -85,15 +106,26 @@ public class ModData {
                     if(Node.ELEMENT_NODE == rowNode.getNodeType()) {
                         Element rowElement = (Element) rowNode;
                         String kind = rowElement.getAttribute(XmlStrings.ATTRIBUTE_KIND);
-                        if(kind == null || kind.isEmpty()) {
+                        String type = rowElement.getAttribute(XmlStrings.ATTRIBUTE_TYPE);
+                        if(kind.isEmpty() || type.isEmpty()) {
                             continue;
                         }
-                        if(XmlStrings.VALUE_KIND_UNIT.equals(kind)) {
-                            String type = rowElement.getAttribute(XmlStrings.ATTRIBUTE_TYPE);
-                            if(type != null || !type.isEmpty()) {
-                                Unit unit = new Unit(sourceXmlFile, type);
-                                units.add(unit);
-                            }
+
+                        if(XmlStrings.VALUE_KIND_BUILDING.equals(kind)) {
+                            Building building = new Building(sourceXmlFile, type);
+                            buildings.add(building);
+                        }
+                        else if(XmlStrings.VALUE_KIND_CIVILIZATION.equals(kind)) {
+                            Civilization civilization = new Civilization(sourceXmlFile, type);
+                            civilizations.add(civilization);
+                        }
+                        else if(XmlStrings.VALUE_KIND_LEADER.equals(kind)) {
+                            Leader leader = new Leader(sourceXmlFile, type);
+                            leaders.add(leader);
+                        }
+                        else if(XmlStrings.VALUE_KIND_UNIT.equals(kind)) {
+                            Unit unit = new Unit(sourceXmlFile, type);
+                            units.add(unit);
                         }
                     }
                 }
@@ -115,6 +147,18 @@ public class ModData {
             Node node = nodeList.item(i);
 
         }
+    }
+
+    public Set<Building> getBuildings() {
+        return buildings;
+    }
+
+    public Set<Civilization> getCivilizations() {
+        return civilizations;
+    }
+
+    public Set<Leader> getLeaders() {
+        return leaders;
     }
 
     public Set<Unit> getUnits() {

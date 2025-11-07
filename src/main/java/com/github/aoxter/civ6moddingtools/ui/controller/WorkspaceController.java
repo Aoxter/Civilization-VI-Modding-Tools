@@ -1,7 +1,6 @@
 package com.github.aoxter.civ6moddingtools.ui.controller;
 
-import com.github.aoxter.civ6moddingtools.core.model.ModData;
-import com.github.aoxter.civ6moddingtools.core.model.Unit;
+import com.github.aoxter.civ6moddingtools.core.model.*;
 import com.github.aoxter.civ6moddingtools.ui.config.StageManager;
 import com.github.aoxter.civ6moddingtools.ui.event.OpenProjectEvent;
 import javafx.beans.property.SimpleStringProperty;
@@ -27,6 +26,12 @@ public class WorkspaceController implements Initializable {
     private ModData modData;
 
     @FXML
+    public ListView<Building> buildingListView;
+    @FXML
+    public ListView<Civilization> civilizationListView;
+    @FXML
+    public ListView<Leader> leaderListView;
+    @FXML
     public ListView<Unit> unitListView;
     @FXML
     private  Label testLabel;
@@ -51,6 +56,15 @@ public class WorkspaceController implements Initializable {
                 public void changed(ObservableValue<? extends Unit> observableValue, Unit unit, Unit t1) {
                 }
             });
+
+            buildingListView.getItems().addAll(modData.getBuildings());
+            buildingListView.setCellFactory(new BuildingCellFactory());
+
+            civilizationListView.getItems().addAll(modData.getCivilizations());
+            civilizationListView.setCellFactory(new CivilizationCellFactory());
+
+            leaderListView.getItems().addAll(modData.getLeaders());
+            leaderListView.setCellFactory(new LeaderCellFactory());
         } catch (Exception e) {
             e.printStackTrace();
         }

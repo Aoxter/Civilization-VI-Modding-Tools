@@ -23,6 +23,21 @@
          <children>
              <TabPane prefHeight="452.0" prefWidth="1054.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
                  <tabs>
+                     <Tab text="Buildings">
+                         <content>
+                             <ListView fx:id="buildingListView" prefHeight="200.0" prefWidth="200.0" />
+                         </content>
+                     </Tab>
+                     <Tab text="Civilizations">
+                         <content>
+                             <ListView fx:id="civilizationListView" prefHeight="200.0" prefWidth="200.0" />
+                         </content>
+                     </Tab>
+                     <Tab text="Leaders">
+                         <content>
+                             <ListView fx:id="leaderListView" prefHeight="200.0" prefWidth="200.0" />
+                         </content>
+                     </Tab>
                      <Tab text="Units">
                          <content>
                              <ListView fx:id="unitListView" prefHeight="200.0" prefWidth="200.0" />
