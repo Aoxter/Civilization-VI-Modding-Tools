@@ -1,17 +1,13 @@
 package com.github.aoxter.civ6moddingtools.core.model;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
-import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,6 +19,7 @@ public class ModData {
     private Set<Civilization> civilizations;
     private Set<Leader> leaders;
     private Set<Unit> units;
+    private Set<Artdef> artdefs;
 
     private ModData() {
     }
@@ -34,6 +31,7 @@ public class ModData {
             INSTANCE.civilizations = new HashSet<>();
             INSTANCE.leaders = new HashSet<>();
             INSTANCE.units = new HashSet<>();
+            INSTANCE.artdefs = new HashSet<>();
         }
         return INSTANCE;
     }
@@ -57,6 +55,10 @@ public class ModData {
         System.out.println("UNITS");
         System.out.println("--------------------------------------------------");
         System.out.println(units.stream().map(Unit::toString).collect(Collectors.joining( "\n")));
+        System.out.println("--------------------------------------------------");
+        System.out.println("ARTDEFS");
+        System.out.println("--------------------------------------------------");
+        System.out.println(artdefs.stream().map(Artdef::toString).collect(Collectors.joining( "\n")));
     }
 
     protected void loadDataFromDirectory(File directory) {
@@ -66,87 +68,112 @@ public class ModData {
                 if (file.isDirectory()) {
                     loadDataFromDirectory(file);
                 }
-                else if (file.getName().endsWith(".xml") || file.getName().endsWith(".XML")) {
-                    loadDataFromXmlFile(file);
+                else if(file.getName().toLowerCase().endsWith("art.xml")) {
+                    //TODO temporary solution, dom4j doesn't read :: at root AssetObjects::GameArtSpecification tag
+                    return;
+                }
+                else if (file.getName().toLowerCase().endsWith(".xml")) {
+                    parseDataFile(file);
+                }
+                else if (file.getName().toLowerCase().endsWith(".artdef")) {
+                    parseArtDefFile(file);
+                }
+                else if (file.getName().toLowerCase().endsWith(".xlp")) {
+                    parseXlpFile(file);
                 }
             }
         }
+
+
     }
 
-    protected void loadDataFromXmlFile(File xmlFile) {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    protected Element getXmlFileRootElement(File sourceXmlFile) throws DocumentException {
+        SAXReader reader = new SAXReader();
+        Document document = reader.read(sourceXmlFile);
+        return document.getRootElement();
+    }
+
+    protected void parseDataFile(File sourceXmlFile) {
         try {
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(xmlFile);
-            document.getDocumentElement().normalize();
-            Element rootElement = document.getDocumentElement();
-            if(XmlStrings.ROOT_TAG_GAME_DATA.equals(rootElement.getNodeName()) || XmlStrings.ROOT_TAG_GAME_INFO.equals(rootElement.getNodeName())) {
-                parseDataFile(xmlFile, rootElement);
-            }
-            else if(XmlStrings.ROOT_TAG_ART_DEF_SET.equals(rootElement.getNodeName())) {
-                parseArtDefFile(rootElement);
-            }
-            else if(XmlStrings.ROOT_TAG_XLP.equals(rootElement.getNodeName())) {
-                parseXlpFile(rootElement);
-            }
-        } catch (ParserConfigurationException | SAXException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    protected void parseDataFile(File sourceXmlFile, Element rootElement) {
-        NodeList typesNodeList = rootElement.getElementsByTagName(XmlStrings.NODE_TAG_TYPES);
-        for(int typesPos=0; typesPos < typesNodeList.getLength(); typesPos++) {
-            Node typeNode = typesNodeList.item(typesPos);
-            if(Node.ELEMENT_NODE == typeNode.getNodeType()) {
-                Element typeElement = (Element) typeNode;
-                NodeList typeRowsNodesList = typeElement.getElementsByTagName(XmlStrings.ROW_TAG);
-                for(int rowsPos=0; rowsPos < typeRowsNodesList.getLength(); rowsPos++) {
-                    Node rowNode = typeRowsNodesList.item(rowsPos);
-                    if(Node.ELEMENT_NODE == rowNode.getNodeType()) {
-                        Element rowElement = (Element) rowNode;
-                        String kind = rowElement.getAttribute(XmlStrings.ATTRIBUTE_KIND);
-                        String type = rowElement.getAttribute(XmlStrings.ATTRIBUTE_TYPE);
-                        if(kind.isEmpty() || type.isEmpty()) {
+            Element rootElement = getXmlFileRootElement(sourceXmlFile);
+            if(XmlConstants.ROOT_TAG_GAME_DATA.equals(rootElement.getName()) || XmlConstants.ROOT_TAG_GAME_INFO.equals(rootElement.getName())) {
+                List<Element> typeElementsList = rootElement.elements(XmlConstants.NODE_TAG_TYPES);
+                for (Element typeElement : typeElementsList) {
+                    List<Element> typeRowElementsList = typeElement.elements(XmlConstants.TAG_ROW);
+                    for (Element typeRowElement : typeRowElementsList) {
+                        String kind = typeRowElement.attributeValue(XmlConstants.ATTRIBUTE_KIND);
+                        String type = typeRowElement.attributeValue(XmlConstants.ATTRIBUTE_TYPE);
+                        if (kind == null || type == null) {
                             continue;
                         }
 
-                        if(XmlStrings.VALUE_KIND_BUILDING.equals(kind)) {
+                        if (XmlConstants.VALUE_KIND_BUILDING.equals(kind)) {
                             Building building = new Building(sourceXmlFile, type);
                             buildings.add(building);
-                        }
-                        else if(XmlStrings.VALUE_KIND_CIVILIZATION.equals(kind)) {
+                        } else if (XmlConstants.VALUE_KIND_CIVILIZATION.equals(kind)) {
                             Civilization civilization = new Civilization(sourceXmlFile, type);
                             civilizations.add(civilization);
-                        }
-                        else if(XmlStrings.VALUE_KIND_LEADER.equals(kind)) {
+                        } else if (XmlConstants.VALUE_KIND_LEADER.equals(kind)) {
                             Leader leader = new Leader(sourceXmlFile, type);
                             leaders.add(leader);
-                        }
-                        else if(XmlStrings.VALUE_KIND_UNIT.equals(kind)) {
+                        } else if (XmlConstants.VALUE_KIND_UNIT.equals(kind)) {
                             Unit unit = new Unit(sourceXmlFile, type);
                             units.add(unit);
                         }
                     }
                 }
             }
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    protected void parseArtDefFile(Element rootElement) {
-        NodeList nodeList = rootElement.getChildNodes();
-        for(int i=0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
+    protected void parseArtDefFile(File sourceXmlFile) {
+        try {
+            Element rootElement = getXmlFileRootElement(sourceXmlFile);
+            if(XmlConstants.ROOT_TAG_ART_DEF_SET.equals(rootElement.getName())) {
+                List<Element> templateElementsList = rootElement.elements(XmlConstants.AD_NODE_TAG_TEMPLATE);
+                String templateName = templateElementsList.getFirst().attributeValue(XmlConstants.ATTRIBUTE_TEXT);
 
+                List<Element> versionElementsList = rootElement.elements(XmlConstants.AD_NODE_TAG_VERSION);
+                Element versionElement = versionElementsList.getFirst();
+
+                List<Element> collectionRootElementsList = rootElement.elements(XmlConstants.AD_NODE_TAG_COLLECTION_ROOT);
+                Element collectionRootElement = collectionRootElementsList.getFirst();
+
+                if(templateName != null && collectionRootElement != null && versionElement != null) {
+                    if(artdefTemplateAlreadyExists(templateName)) {
+                    }
+                    else {
+                        switch (templateName) {
+                            case "Leaders"-> artdefs.add(new ArtdefLeaders(templateName, versionElement, collectionRootElement));
+                            case "LeaderFallback" -> artdefs.add(new ArtdefLeadersFallback(templateName, versionElement, collectionRootElement));
+                        }
+                    }
+                }
+            }
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    protected void parseXlpFile(Element rootElement) {
-        NodeList nodeList = rootElement.getChildNodes();
-        for(int i=0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-
+    protected void parseXlpFile(File sourceXmlFile) {
+        try {
+            Element rootElement = getXmlFileRootElement(sourceXmlFile);
+            if(XmlConstants.ROOT_TAG_XLP.equals(rootElement.getName())) {
+            }
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    protected boolean artdefTemplateAlreadyExists(String templateName) {
+        for(Artdef artdef : getArtdefs()) {
+            if(artdef.templateName.equals(templateName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Set<Building> getBuildings() {
@@ -163,5 +190,9 @@ public class ModData {
 
     public Set<Unit> getUnits() {
         return units;
+    }
+
+    public Set<Artdef> getArtdefs() {
+        return artdefs;
     }
 }
