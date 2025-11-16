@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ArtdefLeadersFallback extends Artdef {
+public class ArtdefLeaderFallback extends Artdef {
     protected Set<LeaderArtdefElement> leaderElements;
 
-    public ArtdefLeadersFallback(String templateName, Element versionElement, Element rootCollectionElement) {
+    public ArtdefLeaderFallback(String templateName, Element versionElement, Element rootCollectionElement) {
         super(templateName, versionElement, rootCollectionElement);
     }
 
@@ -24,12 +24,17 @@ public class ArtdefLeadersFallback extends Artdef {
         }
     }
 
+    @Override
+    public Set<LeaderArtdefElement> getElementSet() {
+        return leaderElements;
+    }
+
     public Set<LeaderArtdefElement> getLeaderElements() {
         return leaderElements;
     }
 
     @Override
     public String toString() {
-        return "[ArtdefLeadersFallback]:" + leaderElements.stream().map(LeaderArtdefElement::toString).collect(Collectors.joining( "\n"));
+        return "[ArtdefLeaderFallback]:" + leaderElements.stream().map(LeaderArtdefElement::toString).collect(Collectors.joining( "\n"));
     }
 }

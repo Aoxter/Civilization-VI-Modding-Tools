@@ -195,4 +195,8 @@ public class ModData {
     public Set<Artdef> getArtdefs() {
         return artdefs;
     }
+
+    public Artdef getArtdefByTemplate(ArtdefTemplate template) {
+        return artdefs.stream().filter(artdef -> artdef.templateName.equals(template.templateName)).findFirst().orElse(null);
+    }
 }

@@ -15,36 +15,59 @@
  <center>
      <GridPane BorderPane.alignment="CENTER">
          <columnConstraints>
-             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+             <ColumnConstraints percentWidth="50" />
+             <ColumnConstraints percentWidth="50" />
          </columnConstraints>
          <rowConstraints>
-             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+             <RowConstraints percentHeight="100" />
          </rowConstraints>
          <children>
-             <TabPane prefHeight="452.0" prefWidth="1054.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-                 <tabs>
-                     <Tab text="Buildings">
-                         <content>
-                             <ListView fx:id="buildingListView" prefHeight="200.0" prefWidth="200.0" />
-                         </content>
-                     </Tab>
-                     <Tab text="Civilizations">
-                         <content>
-                             <ListView fx:id="civilizationListView" prefHeight="200.0" prefWidth="200.0" />
-                         </content>
-                     </Tab>
-                     <Tab text="Leaders">
-                         <content>
-                             <ListView fx:id="leaderListView" prefHeight="200.0" prefWidth="200.0" />
-                         </content>
-                     </Tab>
-                     <Tab text="Units">
-                         <content>
-                             <ListView fx:id="unitListView" prefHeight="200.0" prefWidth="200.0" />
-                         </content>
-                     </Tab>
-                 </tabs>
-             </TabPane>
+             <TitledPane prefHeight="452.0" prefWidth="1054.0" text="Game data" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="0">
+                <content>
+                    <TabPane prefHeight="452.0" prefWidth="1054.0" tabClosingPolicy="UNAVAILABLE">
+                        <tabs>
+                            <Tab text="Buildings">
+                                <content>
+                                    <ListView fx:id="buildingListView" prefHeight="200.0" prefWidth="200.0" />
+                                </content>
+                            </Tab>
+                            <Tab text="Civilizations">
+                                <content>
+                                    <ListView fx:id="civilizationListView" prefHeight="200.0" prefWidth="200.0" />
+                                </content>
+                            </Tab>
+                            <Tab text="Leaders">
+                                <content>
+                                    <ListView fx:id="leaderListView" prefHeight="200.0" prefWidth="200.0" />
+                                </content>
+                            </Tab>
+                            <Tab text="Units">
+                                <content>
+                                    <ListView fx:id="unitListView" prefHeight="200.0" prefWidth="200.0" />
+                                </content>
+                            </Tab>
+                        </tabs>
+                    </TabPane>
+                </content>
+             </TitledPane>
+            <TitledPane prefHeight="452.0" prefWidth="1054.0" text="Artdef" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="1">
+               <content>
+                  <TabPane prefHeight="452.0" prefWidth="1054.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                        <Tab text="Leaders">
+                            <content>
+                                <ListView fx:id="adLeadersListView" prefHeight="200.0" prefWidth="200.0" />
+                            </content>
+                        </Tab>
+                        <Tab text="LeaderFallback">
+                            <content>
+                                <ListView fx:id="adLeaderFallbackListView" prefHeight="200.0" prefWidth="200.0" />
+                            </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+               </content>
+            </TitledPane>
          </children>
      </GridPane>
  </center>

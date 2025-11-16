@@ -24,6 +24,11 @@ public class ArtdefLeaders extends Artdef{
         }
     }
 
+    @Override
+    public Set<String> getElementSet() {
+        return leaders;
+    }
+
     public Set<String> getLeaders() {
         return leaders;
     }

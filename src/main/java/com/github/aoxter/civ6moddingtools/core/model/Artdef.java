@@ -2,6 +2,8 @@ package com.github.aoxter.civ6moddingtools.core.model;
 
 import org.dom4j.Element;
 
+import java.util.Set;
+
 public abstract class Artdef {
     public final String templateName;
     protected String versionMajor;
@@ -22,5 +24,7 @@ public abstract class Artdef {
     }
 
     protected abstract void loadFromXmlElement(Element rootCollectionElement);
+
+    public abstract Set<?> getElementSet();
 
 }

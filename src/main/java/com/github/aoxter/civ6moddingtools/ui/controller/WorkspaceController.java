@@ -21,6 +21,7 @@ import java.util.ResourceBundle;
 
 @Component
 public class WorkspaceController implements Initializable {
+
     private File modDirectory;
     private final StageManager stageManager;
     private ModData modData;
@@ -33,6 +34,12 @@ public class WorkspaceController implements Initializable {
     public ListView<Leader> leaderListView;
     @FXML
     public ListView<Unit> unitListView;
+
+    @FXML
+    public ListView<String> adLeadersListView;
+    @FXML
+    public ListView<LeaderArtdefElement> adLeaderFallbackListView;
+
     @FXML
     private  Label testLabel;
 
@@ -65,6 +72,13 @@ public class WorkspaceController implements Initializable {
 
             leaderListView.getItems().addAll(modData.getLeaders());
             leaderListView.setCellFactory(new LeaderCellFactory());
+
+            ArtdefLeaders adLeaders = (ArtdefLeaders) modData.getArtdefByTemplate(ArtdefTemplate.LEADERS);
+            adLeadersListView.getItems().addAll(adLeaders.getElementSet());
+
+            ArtdefLeaderFallback adLeaderFallback = (ArtdefLeaderFallback) modData.getArtdefByTemplate(ArtdefTemplate.LEADER_FALLBACK);
+            adLeaderFallbackListView.getItems().addAll(adLeaderFallback.getElementSet());
+            adLeaderFallbackListView.setCellFactory(new LeaderArtdefElementCellFactory());
         } catch (Exception e) {
             e.printStackTrace();
         }
