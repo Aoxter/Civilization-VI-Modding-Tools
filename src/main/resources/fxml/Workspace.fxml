@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
@@ -13,16 +14,20 @@
     </Label>
  </top>
  <center>
-     <GridPane BorderPane.alignment="CENTER">
+     <GridPane BorderPane.alignment="CENTER" hgap="10" vgap="10">
+         <padding>
+             <Insets bottom="10" left="10" right="10" top="10" />
+         </padding>
          <columnConstraints>
              <ColumnConstraints percentWidth="50" />
              <ColumnConstraints percentWidth="50" />
          </columnConstraints>
          <rowConstraints>
-             <RowConstraints percentHeight="100" />
+             <RowConstraints percentHeight="50" />
+             <RowConstraints percentHeight="50" />
          </rowConstraints>
          <children>
-             <TitledPane prefHeight="452.0" prefWidth="1054.0" text="Game data" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="0">
+             <TitledPane maxHeight="Infinity" maxWidth="Infinity" prefHeight="452.0" prefWidth="1054.0" text="Game data" GridPane.columnIndex="0" GridPane.rowIndex="0">
                 <content>
                     <TabPane prefHeight="452.0" prefWidth="1054.0" tabClosingPolicy="UNAVAILABLE">
                         <tabs>
@@ -50,7 +55,7 @@
                     </TabPane>
                 </content>
              </TitledPane>
-            <TitledPane prefHeight="452.0" prefWidth="1054.0" text="Artdef" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="1">
+            <TitledPane maxHeight="Infinity" maxWidth="Infinity" prefHeight="452.0" prefWidth="1054.0" text="Artdef" GridPane.columnIndex="1" GridPane.rowIndex="0">
                <content>
                   <TabPane prefHeight="452.0" prefWidth="1054.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
@@ -68,6 +73,14 @@
                   </TabPane>
                </content>
             </TitledPane>
+             <TitledPane maxHeight="Infinity" maxWidth="Infinity" prefHeight="452.0" prefWidth="1054.0" text="Icons" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                 <content>
+                 </content>
+             </TitledPane>
+             <TitledPane maxHeight="Infinity" maxWidth="Infinity" prefHeight="452.0" prefWidth="1054.0" text="XLP" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                 <content>
+                 </content>
+             </TitledPane>
          </children>
      </GridPane>
  </center>
